@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.field {
+  position: relative;
+  padding-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+input,
+select {
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  height: 32px;
+  padding: 20px 8px;
+}
+
+input:focus,
+select:focus {
+  outline-style: none;
+  border: 2px solid orange;
+}
+
+button {
+  padding: 12px;
+  width: 240px;
+  border-radius: 4px;
+  border: 1px solid rgb(255, 162, 0);
+  background-color: rgb(255, 162, 0);
+  color: white;
+  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+button:hover {
+  border: 1px solid rgba(255, 111, 0, 0.999);
+  background-color: rgba(255, 111, 0, 0.999);
+  color: white;
+  cursor: pointer;
+}
+
+sup {
+  color: red;
+  top: -2px;
+  font-size: 95%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
