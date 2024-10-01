@@ -8,6 +8,7 @@ import {
 import Home from "./pages/Home";
 import OtpVerification from "./pages/OtpVerification";
 import Header from "./components/Header";
+import ThankYou from "./pages/ThankYou";
 
 function App() {
   // State to store the phone number that will be passed to VerifyPhone
@@ -20,6 +21,8 @@ function App() {
       <Routes>
         {/* Home route */}
         <Route path="/" element={<Home setPhoneNumber={setPhoneNumber} />} />
+        <Route path="/thank" element={<ThankYou  />} />
+
 
         {/* OTP Verification route */}
         <Route

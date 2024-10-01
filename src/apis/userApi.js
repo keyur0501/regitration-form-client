@@ -14,3 +14,8 @@ export const verifyOtp = async (userId, otp) => {
   const response = await axios.post(`${API_URL}/verify-otp`, { userId, otp });
   return response; // Return the response from the server
 };
+
+export const resendOtp = async(userId, otp)=>{
+  const response = await axios.post(`${API_URL}/resend-otp`, {userId, otp});
+  return response
+}

@@ -1,9 +1,8 @@
-import React from "react";
-import { useState } from "react";
-import { validateEmail } from "../utils/utils.js";
+import React, { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
-import { createUser } from "../apis/UserApi";
+import { createUser } from "../apis/userApi";
 import { useNavigate } from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
 
 const Home = () => {
   const [firstName, setFirstName] = useState("");
@@ -21,9 +20,21 @@ const Home = () => {
     setLoanAmount("");
   };
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("hello");
+    // Validate email
+    if (!validateEmail(email)) {
+      toast.error("Invalid email address", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      return;
+    }
+
     // Prepare user data
     const userData = {
       firstName,
@@ -32,29 +43,49 @@ const Home = () => {
       phone: phoneNumber,
       loanAmount,
     };
-    console.log(userData);
-    await createUser(userData);
-    navigate("/otp-verify");
 
-    clearForm();
+    try {
+      const response = await createUser(userData);
+
+      if (response.status === 201) {
+        console.log(response.data)
+        navigate("/otp-verify", {
+          state: { phoneNumber, userId: response.data.data._id },
+        });
+        toast.success(
+          "User created successfully! Redirecting to OTP Verification"
+        );
+        clearForm(); // Clear form on success
+      } else if (response.status === 403) {
+        toast.error(
+          response.message || "Email or Phone Number is Already Registered!"
+        );
+      } else {
+        toast.error(
+          response.message || "Failed to create user. Please try again."
+        );
+      }
+    } catch (error) {
+      toast.error("An error occurred. Please try again.");
+      console.error("User creation error:", error);
+    }
   };
 
   return (
-    <div className="flex flex-1 h-[100vh] justify-center mt-16">
-      <form onSubmit={handleSubmit}>
-        <fieldset className="flex flex-col w-[480px] p-4 border border-solid shadow-md rounded-lg">
+    <div className="flex h-[80vh] justify-center w-full mt-16">
+      <form className="w-[90%] max-w-[480px]" onSubmit={handleSubmit}>
+        <fieldset className="flex flex-col p-4 border border-solid shadow-md rounded-lg">
           <h2 className="m-auto p-5 text-xl">Registration Form</h2>
           <div className="field">
             <label>
               First name <sup>*</sup>
             </label>
             <input
-              name="fistName"
+              name="firstName"
               value={firstName}
-              onChange={(e) => {
-                setFirstName(e.target.value);
-              }}
+              onChange={(e) => setFirstName(e.target.value)}
               placeholder="First name"
+              required
             />
           </div>
           <div className="field">
@@ -62,9 +93,7 @@ const Home = () => {
             <input
               name="lastName"
               value={lastName}
-              onChange={(e) => {
-                setLastName(e.target.value);
-              }}
+              onChange={(e) => setLastName(e.target.value)}
               placeholder="Last name"
             />
           </div>
@@ -75,10 +104,9 @@ const Home = () => {
             <input
               name="email"
               value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-              }}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="Email address"
+              required
             />
           </div>
           <div className="field">
@@ -88,10 +116,9 @@ const Home = () => {
             <input
               name="phone"
               value={phoneNumber}
-              onChange={(e) => {
-                setPhoneNumber(e.target.value);
-              }}
+              onChange={(e) => setPhoneNumber(e.target.value)}
               placeholder="Phone number"
+              required
             />
           </div>
           <div className="field">
@@ -102,7 +129,6 @@ const Home = () => {
               name="loanAmount"
               value={loanAmount}
               onChange={(e) => setLoanAmount(e.target.value)}
-              defaultValue=""
               required
             >
               <option value="" disabled>
@@ -115,7 +141,6 @@ const Home = () => {
               <option value="More than 1 crore">More than 1 crore</option>
             </select>
           </div>
-
           <button type="submit">Create account</button>
         </fieldset>
       </form>
