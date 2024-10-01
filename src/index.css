@@ -14,22 +14,24 @@ input,
 select {
   border-radius: 4px;
   border: 1px solid #ccc;
-  height: 32px;
-  padding: 20px 8px;
+  height: 42px; /* Increase height for larger input field */
+  padding: 8px 12px; /* Moderate padding to maintain visibility of options */
+  font-size: 16px; /* Increase font size for a larger appearance */
+  color: black;
 }
 
 input:focus,
 select:focus {
   outline-style: none;
-  border: 2px solid orange;
+  border: 2px solid #1f73fa;
 }
 
 button {
   padding: 12px;
   width: 240px;
   border-radius: 4px;
-  border: 1px solid rgb(255, 162, 0);
-  background-color: rgb(255, 162, 0);
+  border: 1px solid #6c99e2;
+  background-color: #6c99e2;
   color: white;
   text-transform: uppercase;
   font-size: 14px;
@@ -37,8 +39,8 @@ button {
 }
 
 button:hover {
-  border: 1px solid rgba(255, 111, 0, 0.999);
-  background-color: rgba(255, 111, 0, 0.999);
+  border: 1px solid #1f73fa;
+  background-color: #1f73fa;
   color: white;
   cursor: pointer;
 }

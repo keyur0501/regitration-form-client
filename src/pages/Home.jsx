@@ -2,81 +2,54 @@ import React from "react";
 import { useState } from "react";
 import { validateEmail } from "../utils/utils.js";
 import { toast, ToastContainer } from "react-toastify";
-import { createUser } from "../apis/userApi.js";
+import { createUser } from "../apis/UserApi";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState({
-    value: "",
-    isTouched: false,
-  });
+  const [loanAmount, setLoanAmount] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-
-  const getIsFormValid = () => {
-    return (
-      firstName &&
-      validateEmail(email) &&
-      password.value.length >= 8 &&
-      phoneNumber.length >= 10
-    );
-  };
+  const navigate = useNavigate();
 
   const clearForm = () => {
     setFirstName("");
     setLastName("");
     setEmail("");
-    setPassword({
-      value: "",
-      isTouched: false,
-    });
     setPhoneNumber("");
+    setLoanAmount("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    console.log("hello");
     // Prepare user data
     const userData = {
       firstName,
       lastName,
       email,
       phone: phoneNumber,
-      password: password.value,
+      loanAmount,
     };
-
-    try {
-      // Call the createUser API
-      const response = await createUser(userData);
-
-      // Handle success response
-      if (response.success) {
-        toast.success(
-          "Registration successful! Redirecting to OTP verification..."
-        );
-        // Optionally, redirect to OTP verification page here
-      } else {
-        // Handle error response
-        toast.error(response.message, {});
-      }
-    } catch (err) {
-      toast.error(`Error during registration, please try again. ${err} `, {});
-    }
+    console.log(userData);
+    await createUser(userData);
+    navigate("/otp-verify");
 
     clearForm();
   };
 
   return (
-    <div className="flex flex-1 h-[100vh] justify-center items-center">
+    <div className="flex flex-1 h-[100vh] justify-center mt-16">
       <form onSubmit={handleSubmit}>
-        <fieldset className="flex flex-col w-[480px] p-4 border border-solid border-black rounded-lg">
+        <fieldset className="flex flex-col w-[480px] p-4 border border-solid shadow-md rounded-lg">
           <h2 className="m-auto p-5 text-xl">Registration Form</h2>
           <div className="field">
             <label>
               First name <sup>*</sup>
             </label>
             <input
+              name="fistName"
               value={firstName}
               onChange={(e) => {
                 setFirstName(e.target.value);
@@ -87,6 +60,7 @@ const Home = () => {
           <div className="field">
             <label>Last name</label>
             <input
+              name="lastName"
               value={lastName}
               onChange={(e) => {
                 setLastName(e.target.value);
@@ -99,6 +73,7 @@ const Home = () => {
               Email address <sup>*</sup>
             </label>
             <input
+              name="email"
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
@@ -111,6 +86,7 @@ const Home = () => {
               Phone number <sup>*</sup>
             </label>
             <input
+              name="phone"
               value={phoneNumber}
               onChange={(e) => {
                 setPhoneNumber(e.target.value);
@@ -120,24 +96,27 @@ const Home = () => {
           </div>
           <div className="field">
             <label>
-              Password <sup>*</sup>
+              Home loan amount looking for: <sup>*</sup>
             </label>
-            <input
-              value={password.value}
-              type="password"
-              onChange={(e) => {
-                setPassword({ ...password, value: e.target.value });
-              }}
-              onBlur={() => {
-                setPassword({ ...password, isTouched: true });
-              }}
-              placeholder="Password"
-            />
+            <select
+              name="loanAmount"
+              value={loanAmount}
+              onChange={(e) => setLoanAmount(e.target.value)}
+              defaultValue=""
+              required
+            >
+              <option value="" disabled>
+                -- Select Loan Amount --
+              </option>
+              <option value="Less than 25 lakhs">Less than 25 lakhs</option>
+              <option value="25 to 50 lakhs">25 to 50 lakhs</option>
+              <option value="50 to 75 lakhs">50 to 75 lakhs</option>
+              <option value="75 lakhs to 1 crore">75 lakhs to 1 crore</option>
+              <option value="More than 1 crore">More than 1 crore</option>
+            </select>
           </div>
 
-          <button type="submit" disabled={!getIsFormValid()}>
-            Create account
-          </button>
+          <button type="submit">Create account</button>
         </fieldset>
       </form>
       <ToastContainer />
