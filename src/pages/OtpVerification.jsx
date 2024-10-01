@@ -35,13 +35,19 @@ const OtpVerification = () => {
     try {
       console.log(userId, "userId");
       const response = await verifyOtp(userId, otp);
-      if (response.status == 200) {
+      if (response.data.message === "User successfully verified") {
         setIsVerified(true);
         setError("");
         toast.success(response.data.message);
 
         // Redirect to thank you page
         navigate("/thank");
+      }else if(response.data.message === "Invalid or expired OTP"){
+        setError(response.data.message);
+        toast.error(response.data.message);
+      }else if(response.data.message === "User not found"){
+        setError(response.data.message);
+        toast.error(response.data.message);
       } else {
         setError(response.data.message);
         toast.error(response.data.message);
@@ -62,6 +68,12 @@ const OtpVerification = () => {
         setIsResendDisabled(true); // Disable resend button again
         setError("");
         toast.info(response.data.message);
+      }else if(response.data.message === "User is already verified"){
+        setError(response.data.message);
+        toast.error(response.data.message);
+      } else if(response.data.message === "User not found"){
+        setError(response.data.message);
+        toast.error(response.data.message);
       } else {
         toast.error(response.data.message);
       }

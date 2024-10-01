@@ -47,18 +47,19 @@ const Home = () => {
     try {
       const response = await createUser(userData);
 
-      if (response.status === 201) {
-        console.log(response.data)
+      console.log(response.data)
+      if (response.data.message === "User exists but not verified, OTP re-sent") {
+        toast.success(
+          "User exists but not verified, OTP re-sent"
+        );
         navigate("/otp-verify", {
           state: { phoneNumber, userId: response.data.data._id },
         });
-        toast.success(
-          "User created successfully! Redirecting to OTP Verification"
-        );
+        
         clearForm(); // Clear form on success
-      } else if (response.status === 403) {
-        toast.error(
-          response.message || "Email or Phone Number is Already Registered!"
+      } else if (response.data.message === "User created successfully, OTP sent for verification") {
+        toast.success(
+          response.data.message || "User created successfully, OTP sent for verification"
         );
       } else {
         toast.error(
@@ -141,7 +142,10 @@ const Home = () => {
               <option value="More than 1 crore">More than 1 crore</option>
             </select>
           </div>
-          <button type="submit">Create account</button>
+          <div className="flex w-full justify-center">
+
+          <button type="submit">Register</button>
+          </div>
         </fieldset>
       </form>
       <ToastContainer />
